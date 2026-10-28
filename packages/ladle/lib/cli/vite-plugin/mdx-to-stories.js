@@ -6,7 +6,7 @@ import getAst from "./get-ast.js";
 const transformPlugin = (babel) => {
   const { types: t } = babel;
   // make it configurable
-  const packageName = ["@ladle/react", "@uber/ubook"];
+  const packageName = ["@ladle/react", "@uber/ubook", "@conatusco/ladle"];
 
   return {
     visitor: {

@@ -26,6 +26,8 @@
     "forceConsistentCasingInFileNames": true,
     "isolatedModules": true,
     "paths": {
+      "@ladle/react": ["./packages/ladle/lib/app/exports.ts"],
+      "@conatusco/ladle": ["./packages/ladle/lib/app/exports.ts"],
       "virtual:generated-list": ["./packages/ladle/types/generated-list.d.ts"],
       "@/*": ["./e2e/config-ts/src/to/*"]
     }

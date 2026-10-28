@@ -10,18 +10,21 @@ const getStoryList = (entryData) => {
   let storyIds = [];
   /** @type {{[key: string]: any}} */
   let storyParams = {};
-  /** @type {{[key: string]: { locStart: number; locEnd: number; entry: string;}}} */
+  /** @type {{[key: string]: { locStart: number; locEnd: number; entry: string; componentName: string; }}} */
   let storyLocs = {};
 
   Object.keys(entryData).forEach((entry) => {
-    entryData[entry].stories.forEach(({ storyId, locStart, locEnd }) => {
-      storyIds.push(storyId);
-      storyLocs[storyId] = {
-        locStart,
-        locEnd,
-        entry,
-      };
-    });
+    entryData[entry].stories.forEach(
+      ({ storyId, componentName, locStart, locEnd }) => {
+        storyIds.push(storyId);
+        storyLocs[storyId] = {
+          locStart,
+          locEnd,
+          entry,
+          componentName,
+        };
+      },
+    );
     storyParams = { ...storyParams, ...entryData[entry].storyParams };
   });
 
@@ -41,16 +44,21 @@ const getStoryList = (entryData) => {
                   ).declarations[0].init,
                 );
               }
+              const componentIdentifier =
+                storyLocs[story].componentName ||
+                story.replace(
+                  new RegExp(storyDelimiter, "g"),
+                  storyEncodeDelimiter,
+                );
               return t.objectProperty(
                 t.stringLiteral(story),
                 t.objectExpression([
                   t.objectProperty(
                     t.identifier("component"),
                     t.identifier(
-                      story.replace(
-                        new RegExp(storyDelimiter, "g"),
-                        storyEncodeDelimiter,
-                      ),
+                      /^[0-9]/.test(componentIdentifier)
+                        ? `_${componentIdentifier}`
+                        : componentIdentifier,
                     ),
                   ),
                   t.objectProperty(

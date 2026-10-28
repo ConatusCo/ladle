@@ -63,7 +63,12 @@ export const getFileId = (filename) => {
  * @param {string} namedExport
  */
 export const getEncodedStoryName = (fileId, namedExport) => {
-  return `${fileId}${storyEncodeDelimiter}${storyEncodeDelimiter}${namedExport}`
-    .toLocaleLowerCase()
-    .replace(new RegExp(storyDelimiter, "g"), storyEncodeDelimiter);
+  let encoded =
+    `${fileId}${storyEncodeDelimiter}${storyEncodeDelimiter}${namedExport}`
+      .toLocaleLowerCase()
+      .replace(new RegExp(storyDelimiter, "g"), storyEncodeDelimiter);
+  if (/^[0-9]/.test(encoded)) {
+    encoded = `_${encoded}`;
+  }
+  return encoded;
 };

@@ -66,9 +66,18 @@ const getBaseViteConfig = async (ladleConfig, configFolder, viteConfig) => {
   );
   debug("Executed from the ladle monorepo: %s", inladleMonorepo);
 
+  const ladleExportsPath = path.join(__dirname, "../../app/exports.ts");
+  const monorepoAliases = inladleMonorepo
+    ? [
+        { find: "@ladle/react", replacement: ladleExportsPath },
+        { find: "@conatusco/ladle", replacement: ladleExportsPath },
+      ]
+    : [];
+
   const resolve = {};
   if (Array.isArray(userViteConfig.resolve?.alias)) {
     resolve.alias = [
+      ...monorepoAliases,
       {
         find: "msw/browser",
         replacement: ladleConfig.addons.msw.enabled
@@ -90,6 +99,12 @@ const getBaseViteConfig = async (ladleConfig, configFolder, viteConfig) => {
     ];
   } else {
     resolve.alias = {
+      ...(inladleMonorepo
+        ? {
+            ["@ladle/react"]: ladleExportsPath,
+            ["@conatusco/ladle"]: ladleExportsPath,
+          }
+        : {}),
       ["msw/browser"]: ladleConfig.addons.msw.enabled
         ? "msw/browser"
         : path.join(__dirname, "./empty-module.js"),
@@ -160,7 +175,7 @@ const getBaseViteConfig = async (ladleConfig, configFolder, viteConfig) => {
         ...(ladleConfig.addons.a11y.enabled ? ["axe-core"] : []),
         ...(ladleConfig.addons.msw.enabled ? ["msw"] : []),
         ...(ladleConfig.addons.msw.enabled ? ["msw/browser"] : []),
-        ...(inladleMonorepo ? [] : ["@ladle/react"]),
+        ...(inladleMonorepo ? [] : ["@ladle/react", "@conatusco/ladle"]),
         ...(resolve.alias ? [] : ["react-dom/client"]),
       ],
       entries: [

@@ -14,7 +14,7 @@
   },
   "dependencies": {
     "@ladle/playwright-config": "workspace:*",
-    "@ladle/react": "workspace:*",
+    "@conatusco/ladle": "workspace:*",
     "@playwright/test": "^1.61.1",
     "@tailwindcss/postcss": "^4.3.1",
     "autoprefixer": "^10.5.2",

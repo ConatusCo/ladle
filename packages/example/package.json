@@ -10,7 +10,7 @@
     "test": "echo 'no test'"
   },
   "dependencies": {
-    "@ladle/react": "workspace:*",
+    "@conatusco/ladle": "workspace:*",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   }

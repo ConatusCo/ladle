@@ -64,3 +64,27 @@ test("Extract and merge story meta", async () => {
   const list = await getGeneratedList(entryData, ".ladle", defaultConfig);
   expect(list).toMatchSnapshot();
 });
+
+test("Leading numeric digit in story title is prefixed for valid identifier", async () => {
+  const entryData = await getEntryData([
+    "tests/fixtures/numeric-title.stories.tsx",
+  ]);
+  const list = await getGeneratedList(entryData, ".ladle", defaultConfig);
+  expect(list).toMatchSnapshot();
+  expect(list).toContain("const _00$primitives$$reach$balance = lazy(");
+  expect(list).toContain(
+    '"00-primitives--reach-balance": {\n    component: _00$primitives$$reach$balance,',
+  );
+});
+
+test("Leading numeric digit in filename is prefixed for valid identifier", async () => {
+  const entryData = await getEntryData([
+    "tests/fixtures/01-button.stories.tsx",
+  ]);
+  const list = await getGeneratedList(entryData, ".ladle", defaultConfig);
+  expect(list).toMatchSnapshot();
+  expect(list).toContain("const _01$button$$button = lazy(");
+  expect(list).toContain(
+    '"01-button--button": {\n    component: _01$button$$button,',
+  );
+});

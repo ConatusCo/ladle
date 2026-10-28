@@ -1,7 +1,7 @@
 {
-  "name": "@ladle/react",
-  "version": "5.1.1",
-  "repository": "git@github.com:tajo/ladle.git",
+  "name": "@conatusco/ladle",
+  "version": "5.1.2",
+  "repository": "git@github.com:ConatusCo/ladle.git",
   "author": "Vojtech Miksu <vojtech@miksu.cz>",
   "license": "MIT",
   "type": "module",
@@ -16,8 +16,8 @@
   },
   "packageManager": "pnpm@11.9.0",
   "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "registry": "https://npm.pkg.github.com",
+    "access": "public"
   },
   "files": [
     "lib",

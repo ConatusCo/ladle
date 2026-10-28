@@ -24,7 +24,9 @@ const getStoryImports = (entryData) => {
         source: t.stringLiteral(
           cleanupWindowsPath(path.join(IMPORT_ROOT, entry)),
         ),
-        component: t.identifier(componentName),
+        component: t.identifier(
+          /^[0-9]/.test(componentName) ? `_${componentName}` : componentName,
+        ),
         story: t.stringLiteral(namedExport),
       });
       storyImports += `\n${generate(ast).code}`;
