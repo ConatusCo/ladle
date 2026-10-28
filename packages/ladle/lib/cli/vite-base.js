@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react-swc";
 import fs from "fs";
 import { globby } from "globby";
 import { fileURLToPath } from "url";
+import { searchForWorkspaceRoot } from "vite";
 import getAppRoot from "./get-app-root.js";
 import ladlePlugin from "./vite-plugin/vite-plugin.js";
 import debug from "./debug.js";
@@ -10,6 +11,7 @@ import mergeViteConfigs from "./merge-vite-configs.js";
 import getUserViteConfig from "./get-user-vite-config.js";
 import mdxPlugin from "./vite-plugin/mdx-plugin.js";
 import copyMswWorker from "./copy-msw-worker.js";
+import wasmPlugin, { scanWasmPackages } from "./vite-plugin/wasm-plugin.js";
 
 /**
  * @param ladleConfig {import("../shared/types").Config}
@@ -132,6 +134,15 @@ const getBaseViteConfig = async (ladleConfig, configFolder, viteConfig) => {
     )
   ).map((story) => path.join(process.cwd(), story));
 
+  const workspaceRoot = searchForWorkspaceRoot(process.cwd());
+  const nmDirs = Array.from(
+    new Set([
+      path.join(process.cwd(), "node_modules"),
+      path.join(workspaceRoot, "node_modules"),
+    ]),
+  ).filter((dir) => fs.existsSync(dir));
+  const { wasmPackages, wasmFiles } = scanWasmPackages(nmDirs);
+
   /**
    * @type {import('vite').InlineConfig}
    */
@@ -155,7 +166,11 @@ const getBaseViteConfig = async (ladleConfig, configFolder, viteConfig) => {
     },
     envDir: userViteConfig.envDir ? userViteConfig.envDir : process.cwd(),
     resolve,
+    worker: {
+      format: "es",
+    },
     optimizeDeps: {
+      exclude: wasmPackages,
       include: [
         "react",
         "react-dom",
@@ -187,6 +202,7 @@ const getBaseViteConfig = async (ladleConfig, configFolder, viteConfig) => {
       ],
     },
     plugins: [
+      wasmPlugin(nmDirs, wasmFiles),
       mdxPlugin({ mode: viteConfig.mode || "production" }),
       ladlePlugin(ladleConfig, configFolder, viteConfig.mode || ""),
       !hasReactPlugin && !hasReactSwcPlugin && react(),
