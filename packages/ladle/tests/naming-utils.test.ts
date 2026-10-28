@@ -2,6 +2,7 @@ import { test, expect } from "vitest";
 import {
   kebabCase,
   getEncodedStoryName,
+  titleToFileId,
 } from "../lib/cli/vite-plugin/naming-utils.js";
 
 test("kebabCase", () => {
@@ -13,6 +14,9 @@ test("kebabCase", () => {
   expect(kebabCase("theQuickBrownFox")).toBe("the-quick-brown-fox");
   expect(kebabCase("thequickbrownfox")).toBe("thequickbrownfox");
   expect(kebabCase("theQUICKBrownFox")).toBe("the-quick-brown-fox");
+  expect(kebabCase("Door: Left Hand")).toBe("door-left-hand");
+  expect(kebabCase("Button - Primary")).toBe("button-primary");
+  expect(kebabCase("Door: Left — Hand")).toBe("door-left-hand");
 });
 
 test("getEncodedStoryName prefixes identifier when starting with a digit", () => {
@@ -23,4 +27,13 @@ test("getEncodedStoryName prefixes identifier when starting with a digit", () =>
     "_01$button$$primary",
   );
   expect(getEncodedStoryName("animals", "cat")).toBe("animals$$cat");
+});
+
+test("titleToFileId splits on default and custom delimiters without splitting on punctuation", () => {
+  expect(titleToFileId("Forms / Inputs / Text")).toBe("forms--inputs--text");
+  expect(titleToFileId("Door: Left Hand")).toBe("door:-left-hand");
+  expect(titleToFileId("Forms.Inputs.Text", ".")).toBe("forms--inputs--text");
+  expect(titleToFileId("Forms | Inputs | Text", "|")).toBe(
+    "forms--inputs--text",
+  );
 });

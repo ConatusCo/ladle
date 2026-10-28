@@ -190,6 +190,7 @@ export type Config = {
   outDir: string;
   base?: string;
   mode?: string;
+  storyFolderDelimiter?: string;
   expandStoryTree?: boolean;
   noWatch: boolean;
   hotkeys: {

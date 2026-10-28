@@ -17,6 +17,7 @@ export default {
   hmrPort: undefined,
   outDir: "build",
   base: undefined,
+  storyFolderDelimiter: "/",
   expandStoryTree: false,
   hotkeys: {
     search: ["/", "meta+p"],
