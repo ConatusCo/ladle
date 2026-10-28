@@ -12,6 +12,7 @@ import getUserViteConfig from "./get-user-vite-config.js";
 import mdxPlugin from "./vite-plugin/mdx-plugin.js";
 import copyMswWorker from "./copy-msw-worker.js";
 import wasmPlugin, { scanWasmPackages } from "./vite-plugin/wasm-plugin.js";
+import asset404Plugin from "./vite-plugin/asset-404-plugin.js";
 
 /**
  * @param ladleConfig {import("../shared/types").Config}
@@ -203,6 +204,7 @@ const getBaseViteConfig = async (ladleConfig, configFolder, viteConfig) => {
     },
     plugins: [
       wasmPlugin(nmDirs, wasmFiles),
+      asset404Plugin(),
       mdxPlugin({ mode: viteConfig.mode || "production" }),
       ladlePlugin(ladleConfig, configFolder, viteConfig.mode || ""),
       !hasReactPlugin && !hasReactSwcPlugin && react(),
