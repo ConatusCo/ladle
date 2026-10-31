@@ -135,11 +135,20 @@ const getBaseViteConfig = async (ladleConfig, configFolder, viteConfig) => {
     )
   ).map((story) => path.join(process.cwd(), story));
 
-  const workspaceRoot = searchForWorkspaceRoot(process.cwd());
+  const rootFromConfig = configFolder
+    ? searchForWorkspaceRoot(configFolder)
+    : "";
+  const rootFromCwd = searchForWorkspaceRoot(process.cwd());
   const nmDirs = Array.from(
     new Set([
       path.join(process.cwd(), "node_modules"),
-      path.join(workspaceRoot, "node_modules"),
+      path.join(rootFromCwd, "node_modules"),
+      ...(configFolder
+        ? [
+            path.join(configFolder, "node_modules"),
+            path.join(rootFromConfig, "node_modules"),
+          ]
+        : []),
     ]),
   ).filter((dir) => fs.existsSync(dir));
   const { wasmPackages, wasmFiles } = scanWasmPackages(nmDirs);
